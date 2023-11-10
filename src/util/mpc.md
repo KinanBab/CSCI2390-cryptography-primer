@@ -9,8 +9,38 @@
   };
 }());
 ```
+# Secure Multiparty Computation (MPC) Primer
+
+Secure multiparty computation allows multiple parties to execute a distributed
+cryptographically secure computation over their sensitive secret inputs.
+
+The distributed computation only reveals the output to the relevant parties, while
+hiding all other information about the secret inputs.
+
+There are many types of MPC protocols, with different guarantees, thread models,
+and assumptions. In this small primer we focus on secret-sharing based protocols.
 
 ## Additive secret sharing
+
+Secret sharing is a very powerful building block. Secret sharing allows a party
+to split its secret input x into n-many shares x1, ..., xn. In its simplest form,
+secret sharing allows the party to recover the secret input x given all of the shares,
+but does not reveal any information about x if some of the shares are unknown.
+
+Below is a simple (but insecure) version of additive secret sharing, where
+n-1 shares are selected randomly from \[-100, 100\], and the last share is
+selected so that the sum equals x.
+
+This is insecure because it leaks bounds on x. Imagine we are secret sharing
+x into two shares, and say the last share was 200. Then, given that the other
+share can only be between \[-100, 100\], we know that x must be between \[100, 300\].
+This insecurity stems in part from the fact that computers can only store bounded
+finite numbers, and thus the shares will have to come from a range and leak bounds
+on x, no matter how large the range is.
+
+In the adjacent tab you see a secure version of this sharing scheme. In that version,
+secret sharing is mod 128. Because of this, we cannot learn bounds about the input,
+as arithmetic operations wrap around mod 128.
 
 ```neptune[frame=1,title=Insecure&nbsp;Scheme]
 function share(x, n) {
@@ -73,6 +103,13 @@ Console.log(shares, open(shares));
 ```
 
 ## Adding many secrets.
+
+Secret sharing is also useful because it allows executing operations over the shares
+in order to compute a corresponding operation over the secrets.
+
+In the below example, you can see that adding all the shares up then combining them
+produces the sum of all the secrets.
+
 ```neptune[frame=frame3,scope=33]
 let sharesOf5 = share(5, 3);
 let sharesOf10 = share(10, 3);
@@ -99,6 +136,12 @@ Console.log(open(sharesOfSum));
 
 ## MPC example with JIFF
 
+MPC protocols are far richer than just adding numbers.
+
+Here is an example of secure voting using JIFF: a javascript MPC framework.
+
+If you are interested in learning more, head over to the
+[JIFF repo](https://github.com/multiparty/JIFF) and look at the tutorials there!
 
 ```neptune[title=Party&nbsp;1,frame=frame2,scope=1]
 async function onConnect() {
@@ -165,6 +208,7 @@ let jiffClient = new JIFFClient('http://localhost:9111', 'our-setup-application'
 
 ## Playground
 
+Feel free to use this playground interactively to try out different computations!
 
 ```neptune[title=Party&nbsp;1,frame=frame4,scope=1]
 async function playground() {

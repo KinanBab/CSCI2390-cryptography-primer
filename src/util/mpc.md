@@ -136,27 +136,22 @@ Console.log(open(sharesOfSum));
 
 ## MPC example with JIFF
 
-MPC protocols are far richer than just adding numbers.
-
-Here is an example of secure voting using JIFF: a javascript MPC framework.
+JIFF is a framework for building MPC applications for the web. It provides
+APIs for sharing, opening, and performing computations on the shares.
+It also takes care of the networking setup and reliability.
 
 If you are interested in learning more, head over to the
 [JIFF repo](https://github.com/multiparty/JIFF) and look at the tutorials there!
 
 ```neptune[title=Party&nbsp;1,frame=frame2,scope=1]
 async function onConnect() {
-  let options = ['IPA', 'Lager', 'Stout', 'Pilsner'];
-  let input = [1, 0, 0, 0];
+  let input = 10;
 
-  let results = [];
-  for (let i = 0; i < options.length; i++) {
-    let ithOptionShares = jiffClient.share(input[i]);
-    let ithOptionResult = ithOptionShares[1].sadd(ithOptionShares[2]).sadd(ithOptionShares[3]);
-    results.push(await jiffClient.open(ithOptionResult));
-  }
+  let shares = jiffClient.share(input);
+  let shareOfResult = shares[1].sadd(shares[2]).sadd(shares[3]);
+  let result = await jiffClient.open(shareOfResult);
 
-  Console.log('options', options);
-  Console.log('results', results);
+  Console.log('results', result);
 }
 
 let options = { party_count: 3, crypto_provider: true, onConnect: onConnect };
@@ -165,18 +160,13 @@ let jiffClient = new JIFFClient('http://localhost:9111', 'our-setup-application'
 
 ```neptune[title=Party&nbsp;2,frame=frame2,scope=2]
 async function onConnect() {
-  let options = ['IPA', 'Lager', 'Stout', 'Pilsner'];
-  let input = [1, 0, 0, 0];
+  let input = 20;
 
-  let results = [];
-  for (let i = 0; i < options.length; i++) {
-    let ithOptionShares = jiffClient.share(input[i]);
-    let ithOptionResult = ithOptionShares[1].sadd(ithOptionShares[2]).sadd(ithOptionShares[3]);
-    results.push(await jiffClient.open(ithOptionResult));
-  }
+  let shares = jiffClient.share(input);
+  let shareOfResult = shares[1].sadd(shares[2]).sadd(shares[3]);
+  let result = await jiffClient.open(shareOfResult);
 
-  Console.log('options', options);
-  Console.log('results', results);
+  Console.log('results', result);
 }
 
 let options = { party_count: 3, crypto_provider: true, onConnect: onConnect };
@@ -185,18 +175,13 @@ let jiffClient = new JIFFClient('http://localhost:9111', 'our-setup-application'
 
 ```neptune[title=Party&nbsp;3,frame=frame2,scope=3]
 async function onConnect() {
-  let options = ['IPA', 'Lager', 'Stout', 'Pilsner'];
-  let input = [0, 0, 1, 0];
+  let input = 30;
 
-  let results = [];
-  for (let i = 0; i < options.length; i++) {
-    let ithOptionShares = jiffClient.share(input[i]);
-    let ithOptionResult = ithOptionShares[1].sadd(ithOptionShares[2]).sadd(ithOptionShares[3]);
-    results.push(await jiffClient.open(ithOptionResult));
-  }
+  let shares = jiffClient.share(input);
+  let shareOfResult = shares[1].sadd(shares[2]).sadd(shares[3]);
+  let result = await jiffClient.open(shareOfResult);
 
-  Console.log('options', options);
-  Console.log('results', results);
+  Console.log('results', result);
 }
 
 let options = { party_count: 3, crypto_provider: true, onConnect: onConnect };
